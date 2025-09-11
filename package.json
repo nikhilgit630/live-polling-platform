@@ -1,0 +1,56 @@
+{
+  "name": "move37-polling-backend",
+  "version": "1.0.0",
+  "description": "Real-time polling application backend with Node.js, Express, PostgreSQL, Prisma, and WebSockets",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "node src/seed.js"
+  },
+  "keywords": [
+    "polling",
+    "real-time",
+    "websockets",
+    "express",
+    "prisma",
+    "postgresql"
+  ],
+  "author": "Move37 Ventures Challenge",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "socket.io": "^4.7.4",
+    "prisma": "^5.7.1",
+    "@prisma/client": "^5.7.1",
+    "dotenv": "^16.3.1",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "next": "15.5.3",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "0.543.0",
+    "tailwind-merge": "3.3.1",
+    "tailwindcss-animate": "1.0.7",
+    "http": "0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "@types/react": "19.1.12",
+    "@types/react-dom": "19.1.9",
+    "@types/node": "24.3.1",
+    "tailwindcss": "4.1.13",
+    "typescript": "5.9.2",
+    "postcss": "8.5.6"
+  }
+}

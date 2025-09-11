@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test - Move37 Polling</title>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .connected { background-color: #d4edda; color: #155724; }
+        .disconnected { background-color: #f8d7da; color: #721c24; }
+        .authenticated { background-color: #cce7ff; color: #004085; }
+        input, button, select {
+            padding: 8px 12px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+        .log-info { color: #007bff; }
+        .log-success { color: #28a745; }
+        .log-error { color: #dc3545; }
+        .log-warning { color: #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>Move37 Polling WebSocket Test Client</h1>
+    
+    <div class="container">
+        <h2>Connection Status</h2>
+        <div id="connectionStatus" class="status disconnected">Disconnected</div>
+        <div id="authStatus" class="status disconnected">Not Authenticated</div>
+    </div>
+
+    <div class="container">
+        <h2>Authentication</h2>
+        <input type="text" id="jwtToken" placeholder="Enter JWT Token" style="width: 400px;">
+        <button onclick="authenticate()">Authenticate</button>
+        <p><small>Get a JWT token by logging in via the API: POST /api/users/login</small></p>
+    </div>
+
+    <div class="container">
+        <h2>Poll Room Management</h2>
+        <input type="text" id="pollId" placeholder="Enter Poll ID" style="width: 300px;">
+        <button onclick="joinPoll()">Join Poll</button>
+        <button onclick="leavePoll()">Leave Poll</button>
+        <button onclick="getPollResults()">Get Results</button>
+    </div>
+
+    <div class="container">
+        <h2>Event Log</h2>
+        <button onclick="clearLog()">Clear Log</button>
+        <div id="eventLog" class="log"></div>
+    </div>
+
+    <script>
+        let socket = null;
+        let isConnected = false;
+        let isAuthenticated = false;
+
+        // Initialize WebSocket connection
+        function initializeSocket() {
+            socket = io('http://localhost:3000');
+            
+            socket.on('connect', () => {
+                isConnected = true;
+                updateConnectionStatus();
+                logEvent('Connected to WebSocket server', 'success');
+            });
+
+            socket.on('disconnect', () => {
+                isConnected = false;
+                isAuthenticated = false;
+                updateConnectionStatus();
+                logEvent('Disconnected from WebSocket server', 'error');
+            });
+
+            socket.on('authenticated', (data) => {
+                isAuthenticated = true;
+                updateConnectionStatus();
+                logEvent(`Authenticated as: ${data.user.name} (${data.user.email})`, 'success');
+            });
+
+            socket.on('authentication_error', (error) => {
+                isAuthenticated = false;
+                updateConnectionStatus();
+                logEvent(`Authentication failed: ${error.message}`, 'error');
+            });
+
+            socket.on('joined_poll', (data) => {
+                logEvent(`Joined poll room: ${data.pollId}`, 'info');
+                logEvent(`Poll: ${data.poll.question}`, 'info');
+            });
+
+            socket.on('left_poll', (data) => {
+                logEvent(`Left poll room: ${data.pollId}`, 'info');
+            });
+
+            socket.on('poll_results', (data) => {
+                logEvent('Poll Results Received:', 'info');
+                logEvent(`Question: ${data.question}`, 'info');
+                logEvent(`Total Votes: ${data.totalVotes}`, 'info');
+                data.options.forEach(option => {
+                    logEvent(`  ${option.text}: ${option.votes} votes (${option.percentage}%)`, 'info');
+                });
+            });
+
+            socket.on('vote_update', (data) => {
+                logEvent('Real-time Vote Update:', 'success');
+                if (data.vote.removed) {
+                    logEvent(`Vote removed by ${data.vote.user.name} for "${data.vote.pollOption.text}"`, 'warning');
+                } else {
+                    logEvent(`New vote by ${data.vote.user.name} for "${data.vote.pollOption.text}"`, 'success');
+                }
+                logEvent(`Updated results for poll: ${data.pollId}`, 'info');
+            });
+
+            socket.on('new_poll', (data) => {
+                logEvent('New Poll Created:', 'success');
+                logEvent(`Question: ${data.poll.question}`, 'info');
+                logEvent(`Creator: ${data.poll.creator.name}`, 'info');
+            });
+
+            socket.on('poll_update', (data) => {
+                logEvent('Poll Updated:', 'info');
+                logEvent(`Poll ID: ${data.pollId}`, 'info');
+                logEvent(`Published: ${data.poll.isPublished}`, 'info');
+            });
+
+            socket.on('poll_published', (data) => {
+                logEvent('Poll Published:', 'success');
+                logEvent(`Question: ${data.poll.question}`, 'info');
+            });
+
+            socket.on('error', (error) => {
+                logEvent(`Error: ${error.message}`, 'error');
+            });
+        }
+
+        function updateConnectionStatus() {
+            const connectionEl = document.getElementById('connectionStatus');
+            const authEl = document.getElementById('authStatus');
+            
+            if (isConnected) {
+                connectionEl.textContent = 'Connected';
+                connectionEl.className = 'status connected';
+            } else {
+                connectionEl.textContent = 'Disconnected';
+                connectionEl.className = 'status disconnected';
+            }
+
+            if (isAuthenticated) {
+                authEl.textContent = 'Authenticated';
+                authEl.className = 'status authenticated';
+            } else {
+                authEl.textContent = 'Not Authenticated';
+                authEl.className = 'status disconnected';
+            }
+        }
+
+        function authenticate() {
+            const token = document.getElementById('jwtToken').value.trim();
+            if (!token) {
+                logEvent('Please enter a JWT token', 'error');
+                return;
+            }
+            
+            if (!isConnected) {
+                logEvent('Not connected to server', 'error');
+                return;
+            }
+
+            socket.emit('authenticate', token);
+            logEvent('Attempting authentication...', 'info');
+        }
+
+        function joinPoll() {
+            const pollId = document.getElementById('pollId').value.trim();
+            if (!pollId) {
+                logEvent('Please enter a poll ID', 'error');
+                return;
+            }
+
+            if (!isAuthenticated) {
+                logEvent('Please authenticate first', 'error');
+                return;
+            }
+
+            socket.emit('join_poll', pollId);
+            logEvent(`Attempting to join poll: ${pollId}`, 'info');
+        }
+
+        function leavePoll() {
+            const pollId = document.getElementById('pollId').value.trim();
+            if (!pollId) {
+                logEvent('Please enter a poll ID', 'error');
+                return;
+            }
+
+            socket.emit('leave_poll', pollId);
+            logEvent(`Leaving poll: ${pollId}`, 'info');
+        }
+
+        function getPollResults() {
+            const pollId = document.getElementById('pollId').value.trim();
+            if (!pollId) {
+                logEvent('Please enter a poll ID', 'error');
+                return;
+            }
+
+            socket.emit('get_poll_results', pollId);
+            logEvent(`Requesting results for poll: ${pollId}`, 'info');
+        }
+
+        function logEvent(message, type = 'info') {
+            const log = document.getElementById('eventLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('eventLog').innerHTML = '';
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            initializeSocket();
+            logEvent('WebSocket test client initialized', 'info');
+            logEvent('Instructions:', 'info');
+            logEvent('1. Get a JWT token by calling POST /api/users/login', 'info');
+            logEvent('2. Enter the token and click Authenticate', 'info');
+            logEvent('3. Enter a poll ID and join the poll room', 'info');
+            logEvent('4. Vote via the API to see real-time updates', 'info');
+        };
+    </script>
+</body>
+</html>
