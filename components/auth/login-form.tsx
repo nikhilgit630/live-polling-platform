@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import '../../styles/globals.css'
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"

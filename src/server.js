@@ -1,4 +1,7 @@
-require("dotenv").config()
+// require("dotenv").config()
+
+const dotenv = require("dotenv")
+dotenv.config()
 const express = require("express")
 const http = require("http")
 const cors = require("cors")
@@ -25,7 +28,7 @@ app.use(helmet())
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGINS?.split(",") || ["http://localhost:3000"],
+  origin: process.env.CORS_ORIGINS?.split(",") || ["http://localhost:3001"],
   credentials: true,
   optionsSuccessStatus: 200,
 }
@@ -107,12 +110,12 @@ app.get("/api", (req, res) => {
 })
 
 // 404 handler
-app.use("*", (req, res) => {
-  res.status(404).json({
-    error: "Route not found",
-    message: `Cannot ${req.method} ${req.originalUrl}`,
-  })
-})
+// app.use("*", (req, res) => {
+//   res.status(404).json({
+//     error: "Route not found",
+//     message: `Cannot ${req.method} ${req.originalUrl}`,
+//   })
+// })
 
 // Global error handler
 app.use(globalErrorHandler)

@@ -89,7 +89,7 @@ export function PollCard({ poll, showActions = false, onEdit, onDelete, onView, 
         </div>
 
         <div className="flex items-center justify-between mt-6 pt-4 border-t">
-          <div className="text-sm text-muted-foreground">Created by {poll.creator.name}</div>
+          <div className="text-sm text-muted-foreground">Created by {poll?.creator?.name || 'Unknown User'}</div>
 
           <div className="flex space-x-2">
             <Button variant="outline" size="sm" onClick={handleView}>
