@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Search, Plus, Wifi, WifiOff } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAuth } from "@/contexts/auth-context"
+import PollEditForm from "./EditPollModal"
 
 interface PollsListProps {
   showUserPolls?: boolean
@@ -22,6 +23,7 @@ export function PollsList({ showUserPolls = false, onCreatePoll, onViewPoll, onV
   const [polls, setPolls] = useState<Poll[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [selectedPoll, setSelectedPoll] = useState<Poll | null>(null);
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState<"all" | "published" | "draft">("all")
   const [isConnected, setIsConnected] = useState(false)
@@ -76,9 +78,14 @@ export function PollsList({ showUserPolls = false, onCreatePoll, onViewPoll, onV
   }, [token, showUserPolls])
 
   const handleEdit = (poll: Poll) => {
-    // TODO: Implement edit functionality
-    console.log("Edit poll:", poll.id)
-  }
+    console.log("Edit poll:", poll.id);
+    setSelectedPoll(poll);
+  }; 
+
+  const handleEditSuccess = (updatedPoll: Poll) => {
+    // Ideally refetch polls or update state directly
+    console.log("Poll updated:", updatedPoll);
+  };
 
   const handleDelete = async (poll: Poll) => {
     if (window.confirm("Are you sure you want to delete this poll?")) {
@@ -201,7 +208,14 @@ export function PollsList({ showUserPolls = false, onCreatePoll, onViewPoll, onV
               onVote={onVotePoll}
             />
           ))}
-        </div>
+          </div>
+      )}
+      {selectedPoll && (
+        <PollEditForm
+          poll={selectedPoll}
+          onClose={() => setSelectedPoll(null)}
+          onSuccess= { handleEditSuccess }
+        />
       )}
     </div>
   )

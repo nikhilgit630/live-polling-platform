@@ -8,7 +8,9 @@ const config = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require("tw-animate-css")
+  ],
 };
 
 export default config;

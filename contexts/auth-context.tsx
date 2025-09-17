@@ -1,5 +1,5 @@
 "use client"
-
+import { useRouter } from "next/navigation";
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import { apiClient, type User } from "@/lib/api"
@@ -21,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     // Check for existing token on mount
@@ -83,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(null)
     apiClient.clearToken()
     wsManager.disconnect()
+    router.push("http://localhost:3001")
   }
 
   const value: AuthContextType = {
