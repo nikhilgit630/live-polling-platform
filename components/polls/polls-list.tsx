@@ -84,6 +84,9 @@ export function PollsList({ showUserPolls = false, onCreatePoll, onViewPoll, onV
 
   const handleEditSuccess = (updatedPoll: Poll) => {
     // Ideally refetch polls or update state directly
+    setPolls((prev) =>
+      prev.map((p) => (p.id === updatedPoll.id ? updatedPoll : p))
+    );
     console.log("Poll updated:", updatedPoll);
   };
 

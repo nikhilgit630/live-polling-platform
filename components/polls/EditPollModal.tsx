@@ -6,6 +6,14 @@ interface Poll {
     id: string
     question: string
     isPublished: boolean
+    createdAt: string
+    updatedAt: string
+    creator: {
+        id: string
+        name: string
+    }
+    options: PollOption[]
+    totalVotes: number
 }
 
 interface PollEditFormProps {
