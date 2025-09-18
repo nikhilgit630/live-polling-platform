@@ -286,9 +286,6 @@
 .transform {
   transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
 }
-.animate-in {
-  animation: enter var(--tw-animation-duration,var(--tw-duration,.15s))var(--tw-ease,ease)var(--tw-animation-delay,0s)var(--tw-animation-iteration-count,1)var(--tw-animation-direction,normal)var(--tw-animation-fill-mode,none);
-}
 .animate-pulse {
   animation: var(--animate-pulse);
 }
@@ -900,12 +897,6 @@
   -moz-user-select: none;
        user-select: none;
 }
-.running {
-  animation-play-state: running;
-}
-.slide-in-from-top-2 {
-  --tw-enter-translate-y: calc(var(--spacing) * 2*-1);
-}
 .group-data-\[disabled\=true\]\:pointer-events-none {
   &:is(:where(.group)[data-disabled="true"] *) {
     pointer-events: none;
@@ -1260,20 +1251,10 @@
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
 }
-.data-\[side\=bottom\]\:slide-in-from-top-2 {
-  &[data-side="bottom"] {
-    --tw-enter-translate-y: calc(var(--spacing) * 2*-1);
-  }
-}
 .data-\[side\=left\]\:-translate-x-1 {
   &[data-side="left"] {
     --tw-translate-x: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-}
-.data-\[side\=left\]\:slide-in-from-right-2 {
-  &[data-side="left"] {
-    --tw-enter-translate-x: calc(var(--spacing) * 2);
   }
 }
 .data-\[side\=right\]\:translate-x-1 {
@@ -1282,20 +1263,10 @@
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
 }
-.data-\[side\=right\]\:slide-in-from-left-2 {
-  &[data-side="right"] {
-    --tw-enter-translate-x: calc(var(--spacing) * 2*-1);
-  }
-}
 .data-\[side\=top\]\:-translate-y-1 {
   &[data-side="top"] {
     --tw-translate-y: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-}
-.data-\[side\=top\]\:slide-in-from-bottom-2 {
-  &[data-side="top"] {
-    --tw-enter-translate-y: calc(var(--spacing) * 2);
   }
 }
 .data-\[size\=default\]\:h-9 {
@@ -1371,28 +1342,6 @@
     background-color: var(--primary);
   }
 }
-.data-\[state\=closed\]\:animate-out {
-  &[data-state="closed"] {
-    animation: exit var(--tw-animation-duration,var(--tw-duration,.15s))var(--tw-ease,ease)var(--tw-animation-delay,0s)var(--tw-animation-iteration-count,1)var(--tw-animation-direction,normal)var(--tw-animation-fill-mode,none);
-  }
-}
-.data-\[state\=closed\]\:fade-out-0 {
-  &[data-state="closed"] {
-    --tw-exit-opacity: calc(0/100);
-    --tw-exit-opacity: 0;
-  }
-}
-.data-\[state\=closed\]\:zoom-out-95 {
-  &[data-state="closed"] {
-    --tw-exit-scale: calc(95*1%);
-    --tw-exit-scale: .95;
-  }
-}
-.data-\[state\=open\]\:animate-in {
-  &[data-state="open"] {
-    animation: enter var(--tw-animation-duration,var(--tw-duration,.15s))var(--tw-ease,ease)var(--tw-animation-delay,0s)var(--tw-animation-iteration-count,1)var(--tw-animation-direction,normal)var(--tw-animation-fill-mode,none);
-  }
-}
 .data-\[state\=open\]\:bg-accent {
   &[data-state="open"] {
     background-color: var(--accent);
@@ -1401,18 +1350,6 @@
 .data-\[state\=open\]\:text-accent-foreground {
   &[data-state="open"] {
     color: var(--accent-foreground);
-  }
-}
-.data-\[state\=open\]\:fade-in-0 {
-  &[data-state="open"] {
-    --tw-enter-opacity: calc(0/100);
-    --tw-enter-opacity: 0;
-  }
-}
-.data-\[state\=open\]\:zoom-in-95 {
-  &[data-state="open"] {
-    --tw-enter-scale: calc(95*1%);
-    --tw-enter-scale: .95;
   }
 }
 .data-\[state\=unchecked\]\:translate-x-0 {
@@ -1974,90 +1911,6 @@
   }
 }
 @layer utilities;
-@property --tw-animation-delay {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0s;
-}
-@property --tw-animation-direction {
-  syntax: "*";
-  inherits: false;
-  initial-value: normal;
-}
-@property --tw-animation-duration {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-animation-fill-mode {
-  syntax: "*";
-  inherits: false;
-  initial-value: none;
-}
-@property --tw-animation-iteration-count {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-enter-blur {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-enter-opacity {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-enter-rotate {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-enter-scale {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-enter-translate-x {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-enter-translate-y {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-exit-blur {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-exit-opacity {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-exit-rotate {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-exit-scale {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-exit-translate-x {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-exit-translate-y {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.278 0.015 254.1);
@@ -2381,20 +2234,6 @@
     opacity: 0.5;
   }
 }
-@keyframes enter {
-  from {
-    opacity: var(--tw-enter-opacity,1);
-    transform: translate3d(var(--tw-enter-translate-x,0),var(--tw-enter-translate-y,0),0)scale3d(var(--tw-enter-scale,1),var(--tw-enter-scale,1),var(--tw-enter-scale,1))rotate(var(--tw-enter-rotate,0));
-    filter: blur(var(--tw-enter-blur,0));
-  }
-}
-@keyframes exit {
-  to {
-    opacity: var(--tw-exit-opacity,1);
-    transform: translate3d(var(--tw-exit-translate-x,0),var(--tw-exit-translate-y,0),0)scale3d(var(--tw-exit-scale,1),var(--tw-exit-scale,1),var(--tw-exit-scale,1))rotate(var(--tw-exit-rotate,0));
-    filter: blur(var(--tw-exit-blur,0));
-  }
-}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -2450,23 +2289,6 @@
       --tw-drop-shadow-alpha: 100%;
       --tw-drop-shadow-size: initial;
       --tw-duration: initial;
-      --tw-animation-delay: 0s;
-      --tw-animation-direction: normal;
-      --tw-animation-duration: initial;
-      --tw-animation-fill-mode: none;
-      --tw-animation-iteration-count: 1;
-      --tw-enter-blur: 0;
-      --tw-enter-opacity: 1;
-      --tw-enter-rotate: 0;
-      --tw-enter-scale: 1;
-      --tw-enter-translate-x: 0;
-      --tw-enter-translate-y: 0;
-      --tw-exit-blur: 0;
-      --tw-exit-opacity: 1;
-      --tw-exit-rotate: 0;
-      --tw-exit-scale: 1;
-      --tw-exit-translate-x: 0;
-      --tw-exit-translate-y: 0;
     }
   }
 }
