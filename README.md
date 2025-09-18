@@ -1,6 +1,5 @@
-# Move37 Ventures Real-Time Polling Application
-
-A robust backend service for a real-time polling application built with Node.js, Express, PostgreSQL, Prisma, and WebSockets.
+# Live-Polling Platform
+  -Live Polling Platform – A real-time polling backend using Node.js, Express, PostgreSQL, and Prisma, with WebSocket support for instant vote updates. Users can create polls, vote, and view live results.           Built with a scalable schema, RESTful APIs, and clean architecture to showcase robust backend development.
 
 ## 🚀 Features
 
